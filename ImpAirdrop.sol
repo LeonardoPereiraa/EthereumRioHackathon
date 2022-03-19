@@ -21,7 +21,7 @@ contract ImpactoAirdrop is ERC721, ERC721Enumerable, Ownable {
 
     constructor() ERC721("ImpactoAirdrop", "IMP") {
         // para criadores, devs e giveaway
-    for(uint256 i = 1; i < 6; i++){ 
+    for(uint256 i = 1; i < 8; i++){ 
         safeMint();
     }
     }
