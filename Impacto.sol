@@ -9,7 +9,6 @@ contract Impacto {
         uint256 cost;
         address donor; // if address(0) no completed
     }
-
     struct Projeto {
         bool concluded;
         string projectName;
@@ -22,7 +21,9 @@ contract Impacto {
     mapping(uint128 => Etapa[]) private etapas;
     mapping(uint128 => uint128) quantEtapasConcluidas; // armazena a quantidade de etapas concluídas de cada projeto
     uint128[] private indexOf; // guarda os identificadores dos projetos
-
+    event eventCreateProject(  address ongAddress, uint128 quantTotalEtapas
+    ,uint128 indexOf);
+    
     constructor () payable {}
     
     modifier onlyOng(uint128 id){
@@ -40,13 +41,13 @@ contract Impacto {
     ) external {
         require(msg.sender == _ongAddress, "Not permitted");
         uint128 id = uint128(indexOf.length);
-        projetos[id].concluded = false;
         projetos[id].projectName = _projectName;
         projetos[id].ongAddress = _ongAddress;
         projetos[id].quantEtapas = _quantTotalEtapas;
         createSteps(id, length, _text, _cost);
         quantEtapasConcluidas[id] = 0;
         indexOf.push(id);
+        emit eventCreateProject(  projetos[id].ongAddress,projetos[id].quantEtapas,quantEtapasConcluidas[id]);
     }
 
     function createSteps(uint128 id, uint128 length, string[] calldata _text, uint256[] calldata _cost) private {
