@@ -19,7 +19,7 @@ contract SimpleCollectible is ERC721 {
 
     //function init(address contrato) public {
         //require(msg.sender == owner);
-        //owner = 
+        //owner = contrato;
     //}
 
     function mint(address to, uint256 tokenId) external onlyOwner {
