@@ -5,8 +5,12 @@
 pragma solidity ^0.8.2;
 
 contract Impactov01 {
-    
-    mapping(address => bool) etapasCompletas;
+    //total de etapas
+    uint256 totalEtapas;
+    // numero de etapas concluidas
+    mapping(address => uint256) public nEtapas;
+    // numero de vezes que um address doou
+    mapping(address => uint256) public doador;
 
     constructor () payable {}
     // vai sair daqui, onde vamos colocar? ideiasss
@@ -44,6 +48,7 @@ contract Impactov01 {
         */
         Etapa storage etapa = etapas[_index];
         etapa.completed = !etapa.completed;
+        nEtapas[msg.sender]++;
     }
 
     // essa eh uma funcao segura? qual pode ser a vulnerabildade? 
@@ -52,6 +57,7 @@ contract Impactov01 {
         require(msg.value >= etapa.cost, "valor invalido");
         address payable x = etapa.ong;
         sendViaCall(x);
+        doador[msg.sender]++;
 
     }
 
