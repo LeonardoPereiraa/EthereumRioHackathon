@@ -1,77 +1,82 @@
 // SPDX-License-Identifier: MIT
-/* 
-    essa versao vai mudar
- */
 pragma solidity ^0.8.2;
-// todo criar eventos 
-contract Impactov01 {
-    
-    mapping(address => bool) etapasCompletas;
-    enum status { inCreation, inProgress, concluded } 
-    
-    constructor () payable {}
-    // vai sair daqui, onde vamos colocar? ideiasss
+
+contract Impacto {
+
     struct Etapa {
+        uint128 stepId;
         string text;
         uint256 cost;
-        bool completed;
-    }
-    struct projeto{
-        uint256 id;
-        address payable ong;
-        status projectStatus;
-        string projectName;        
-    } 
-    mapping(uint256 => Etapa[])etapas;
-    mapping(uint256 => projeto)projetos;
-    uint256 count;
-    function createProject(string memory name) public {
-        projetos[count].projectName = name;
-        count++;
-    }
-    function create(string calldata _text, uint256 _cost,uint256 id) public {
-        etapas[id].push(Etapa(
-            {
-            
-            text: _text,
-            cost: _cost ,
-            completed: false
-            }));
+        address donor; // if address(0) no completed
     }
 
-
-    // como podemos pensar para que isso possa existir? nao vejo ser uma boa! somente se for adicionado algum snapshot para verificar essa mudanca
-/*     function update(uint _index, string memory _text) public {
-        Etapa storage etapa = etapas[_index];
-        etapa.text = _text;
-    } */
-//todo adicionar um mapping para verificar que foi concluida
-    function etapaConcluida(uint _index, uint256 id ) public  { // precisamos ter um modifier que somente a ONG X possa chamar essa funcao
-        /*require( 
-            como vamos verificar se etapa foi concluida?
-            vamos delimitar um tempo?
-            );
-        */
-        Etapa storage etapa = etapas[id][_index];
-        etapa.completed = !etapa.completed;
+    struct Projeto {
+        bool concluded;
+        string projectName;
+        address payable ongAddress;
+        uint128 quantEtapas;
+        uint256 totalCost;
     }
 
-    // essa eh uma funcao segura? qual pode ser a vulnerabildade? 
-    function doar(uint _index,uint256 id) public payable {
-        Etapa storage etapa = etapas[id][_index];
-        require(msg.value >= etapa.cost, "valor invalido");
-        address payable x = projetos[id].ong;
-        sendViaCall(x);
+    mapping(uint128 => Projeto) private projetos;
+    mapping(uint128 => Etapa[]) private etapas;
+    mapping(uint128 => uint128) quantEtapasConcluidas; // armazena a quantidade de etapas concluídas de cada projeto
+    uint128[] private indexOf; // guarda os identificadores dos projetos
 
+    constructor () payable {}
+    
+    modifier onlyOng(uint128 id){
+        require(projetos[id].ongAddress == msg.sender, "Not permitted");
+        _;
     }
 
-    function sendViaCall(address payable _to) public payable {
-        // Call returns a boolean value indicating success or failure.
-        // This is the current recommended method to use.
-        (bool sent,) = _to.call{value: msg.value}("");
-        require(sent, "Failed to send Ether");
+    function createProject(
+        string calldata _projectName,
+        address payable _ongAddress,
+        uint128 _quantTotalEtapas,
+        uint128 length,
+        string[] calldata _text,
+        uint256[] calldata _cost
+    ) external {
+        require(msg.sender == _ongAddress, "Not permitted");
+        uint128 id = uint128(indexOf.length);
+        projetos[id].concluded = false;
+        projetos[id].projectName = _projectName;
+        projetos[id].ongAddress = _ongAddress;
+        projetos[id].quantEtapas = _quantTotalEtapas;
+        createSteps(id, length, _text, _cost);
+        quantEtapasConcluidas[id] = 0;
+        indexOf.push(id);
     }
 
+    function createSteps(uint128 id, uint128 length, string[] calldata _text, uint256[] calldata _cost) private {
+        uint256 _totalCost;
+        for(uint128 i=0; i < length; i++){
+            _totalCost += _cost[i];
+            etapas[id].push( Etapa (
+                {
+                    stepId: i,
+                    text: _text[i],
+                    cost: _cost[i],
+                    donor: address(0)
+                }));
+        }
+        projetos[id].totalCost = _totalCost;
+    }
 
-    receive() external payable {}
+    //function changeVisibility(uint128 id, uint128 _status) public onlyOng(id) { // only ong modifier
+        //projetos[id].projectStatus = _status;
+    //}
+
+    function isConcluded(uint128 id) public view returns (bool) {
+        return projetos[id].concluded;
+    }
+
+    //TODO:
+    //function etapaConcluida(uint128 id, uint128 stepId) public onlyOng(id) {
+    function etapaConcluida(uint128 id) public onlyOng(id) {
+        if(projetos[id].quantEtapas == quantEtapasConcluidas[id]){
+            projetos[id].concluded = true;
+        }
+    }
 }
