@@ -3,30 +3,36 @@
     essa versao vai mudar
  */
 pragma solidity ^0.8.2;
-
+// todo criar eventos 
 contract Impactov01 {
-    //total de etapas
-    uint256 totalEtapas;
-    // numero de etapas concluidas
-    mapping(address => uint256) public nEtapas;
-    // numero de vezes que um address doou
-    mapping(address => uint256) public doador;
-
+    
+    mapping(address => bool) etapasCompletas;
+    enum status { inCreation, inProgress, concluded } 
+    
     constructor () payable {}
     // vai sair daqui, onde vamos colocar? ideiasss
     struct Etapa {
-        address payable ong;
         string text;
         uint256 cost;
         bool completed;
     }
-
-    Etapa[] public etapas;
-
-    function create(string calldata _text, uint256 _cost) public {
-        etapas.push(Etapa(
+    struct projeto{
+        uint256 id;
+        address payable ong;
+        status projectStatus;
+        string projectName;        
+    } 
+    mapping(uint256 => Etapa[])etapas;
+    mapping(uint256 => projeto)projetos;
+    uint256 count;
+    function createProject(string memory name) public {
+        projetos[count].projectName = name;
+        count++;
+    }
+    function create(string calldata _text, uint256 _cost,uint256 id) public {
+        etapas[id].push(Etapa(
             {
-            ong: payable(msg.sender),
+            
             text: _text,
             cost: _cost ,
             completed: false
@@ -39,25 +45,23 @@ contract Impactov01 {
         Etapa storage etapa = etapas[_index];
         etapa.text = _text;
     } */
-
-    function etapaConcluida(uint _index) public  { // precisamos ter um modifier que somente a ONG X possa chamar essa funcao
+//todo adicionar um mapping para verificar que foi concluida
+    function etapaConcluida(uint _index, uint256 id ) public  { // precisamos ter um modifier que somente a ONG X possa chamar essa funcao
         /*require( 
             como vamos verificar se etapa foi concluida?
             vamos delimitar um tempo?
             );
         */
-        Etapa storage etapa = etapas[_index];
+        Etapa storage etapa = etapas[id][_index];
         etapa.completed = !etapa.completed;
-        nEtapas[msg.sender]++;
     }
 
     // essa eh uma funcao segura? qual pode ser a vulnerabildade? 
-    function doar(uint _index) public payable {
-        Etapa storage etapa = etapas[_index];
+    function doar(uint _index,uint256 id) public payable {
+        Etapa storage etapa = etapas[id][_index];
         require(msg.value >= etapa.cost, "valor invalido");
-        address payable x = etapa.ong;
+        address payable x = projetos[id].ong;
         sendViaCall(x);
-        doador[msg.sender]++;
 
     }
 
