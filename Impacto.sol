@@ -45,7 +45,6 @@ contract Impacto {
         string calldata _projectName,
         address payable _ongAddress,
         uint128 _quantTotalEtapas,
-        uint128 length,
         string[] calldata _text,
         uint256[] calldata _cost
     ) external {
@@ -54,15 +53,16 @@ contract Impacto {
         projetos[id].projectName = _projectName;
         projetos[id].ongAddress = _ongAddress;
         projetos[id].quantEtapas = _quantTotalEtapas;
-        createSteps(id, length, _text, _cost);
+        createSteps(id, _quantTotalEtapas, _text, _cost);
         quantEtapasConcluidas[id] = 0;
         indexOf.push(id);
         //emit eventCreateProject(  projetos[id].ongAddress,projetos[id].quantEtapas,quantEtapasConcluidas[id]);
     }
 
-    function createSteps(uint128 id, uint128 length, string[] calldata _text, uint256[] calldata _cost) private {
+    function createSteps(uint128 id, uint128 _quantTotalEtapas, string[] calldata _text, uint256[] calldata _cost) private {
+        require(_quantTotalEtapas == _text.length && _quantTotalEtapas == _cost.length, "Valores");
         uint256 _totalCost;
-        for(uint128 i=0; i < length; i++){
+        for(uint128 i = 0; i < _quantTotalEtapas; i++){
             _totalCost += _cost[i];
             etapas[id].push( Etapa (
                 {
@@ -80,7 +80,7 @@ contract Impacto {
     }
 
 
-    //metodos get
+    //metodos get, cancel?, eventos
 
     //function getProjects() returns (uint128[]){
         //return indexOf;
@@ -89,13 +89,13 @@ contract Impacto {
     // essa eh uma funcao segura? qual pode ser a vulnerabildade? 
     function donation(uint128 projectId, uint128 stepId, bool payment) external availableToPay(projectId) payable { // false - paga o projeto inteiro; true - paga uma etapa
         if (payment){
-            require(msg.value >= etapas[projectId][stepId].cost, "Valor menor que o esperado");
+            require(msg.value >= etapas[projectId][stepId].cost, "Insufficient funds");
             address payable x = projetos[projectId].ongAddress;
             sendViaCall(x);
             etapas[projectId][stepId].donor = msg.sender;
             quantEtapasConcluidas[projectId]++;
         } else {
-            require(msg.value >= projetos[projectId].totalCost, "Valor menor que o esperado");
+            require(msg.value >= projetos[projectId].totalCost, "Insufficient funds");
             address payable x = projetos[projectId].ongAddress;
             sendViaCall(x);
             projetos[projectId].donor = msg.sender;
