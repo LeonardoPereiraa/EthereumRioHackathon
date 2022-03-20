@@ -57,6 +57,7 @@ contract Impacto {
         createSteps(id, length, _text, _cost);
         quantEtapasConcluidas[id] = 0;
         indexOf.push(id);
+        //emit eventCreateProject(  projetos[id].ongAddress,projetos[id].quantEtapas,quantEtapasConcluidas[id]);
     }
 
     function createSteps(uint128 id, uint128 length, string[] calldata _text, uint256[] calldata _cost) private {
