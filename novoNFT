@@ -1,0 +1,75 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@1001-digital/erc721-extensions/contracts/RandomlyAssigned.sol";
+
+
+contract Rea1Project is ERC721, Ownable, RandomlyAssigned {
+  using Strings for uint256;
+  
+  uint256 public currentSupply = 0;
+  //limite de nft por address TESTESSS
+  uint256 public nftPerAddressLimit = 1;
+  //custo de ether por address
+  
+  string public baseURI = "ipfs://QmcrXX424aQaioNNFTgQxkVPq2cu2AoKbRaRiGeuZNVBQy/";
+
+  //salva a quantidade de nfts por address
+  mapping(address => uint256) public addressMintedBalance;
+
+  // "Nome do projeto Rea1", "REA1"
+  // 50 Kept for artist, developer & giveaways
+  constructor(uint256 _totalSupply, uint256 _startFrom) 
+    ERC721("Impacto", "IMP")
+    RandomlyAssigned(_totalSupply, _startFrom) // Max. x NFTs available; Start counting from 1 (instead of 0)
+    {
+
+    }
+
+  function _baseURI() internal view virtual override returns (string memory) {
+    return baseURI;
+  }
+
+
+  function mint (uint256 _mintAmount)
+      public
+  {
+      require( tokenCount() + 1 <= totalSupply(), "YOU CAN'T MINT MORE THAN MAXIMUM SUPPLY");
+      require( availableTokenCount() - 1 >= 0, "YOU CAN'T MINT MORE THAN AVALABLE TOKEN COUNT"); 
+      require( tx.origin == msg.sender, "CANNOT MINT THROUGH A CUSTOM CONTRACT");
+      // mudanca de logica para facilitar o entendimento
+      if (msg.sender != owner()) {  
+       
+        require(addressMintedBalance[msg.sender]  != nftPerAddressLimit, "max NFT per address exceeded");
+        
+      }
+      
+      // loop na quantidade de nfts mintados
+      
+        uint256 id = nextToken();
+        addressMintedBalance[msg.sender]++;
+        _safeMint(msg.sender, id);
+        currentSupply++;
+     
+  }
+
+  function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    //require(
+    //  _exists(tokenId),
+    //  "ERC721Metadata: URI query for nonexistant token"
+    //);
+
+    string memory currentBaseURI = _baseURI();
+    return currentBaseURI;
+  }
+  
+  function withdraw() public  onlyOwner {
+    require(payable(msg.sender).send(address(this).balance));
+  }
+  // balance do contrato
+  function ContractbalanceOf() public view returns (uint256) {
+        return address(this).balance;
+    }
+}
