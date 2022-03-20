@@ -80,13 +80,6 @@ contract Impacto {
     }
 
 
-    //metodos get, cancel?, eventos
-
-    //function getProjects() returns (uint128[]){
-        //return indexOf;
-    //}
-
-    // essa eh uma funcao segura? qual pode ser a vulnerabildade? 
     function donation(uint128 projectId, uint128 stepId, bool payment) external availableToPay(projectId) payable { // false - paga o projeto inteiro; true - paga uma etapa
         if (payment){
             require(msg.value >= etapas[projectId][stepId].cost, "Insufficient funds");
@@ -115,5 +108,9 @@ contract Impacto {
         // This is the current recommended method to use.
         (bool sent,) = _to.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
+    }
+
+    function exists(uint128 id) public view returns (bool){
+        return projetos[id].quantEtapas > 0;
     }
 }
