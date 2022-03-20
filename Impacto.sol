@@ -82,10 +82,17 @@ contract Impacto {
 
     //metodos get, cancel?, eventos
 
-    //function getProjects() returns (uint128[]){
-        //return indexOf;
-    //}
-
+    function getProjects(uint128 projectId) public view returns (Projeto memory){
+        Projeto memory meuProjeto = projetos[projectId];
+        return meuProjeto;
+    }
+    function getEtapa(uint128 projectId, uint128 etapaNumber ) public view returns (Etapa memory){
+        Etapa memory listaEtapa = etapas[projectId][etapaNumber];
+        return listaEtapa;
+    }
+    function getNumberOfEtapas(uint128 projectId) public view returns (uint256){
+        return etapas[projectId].length;
+    }
     // essa eh uma funcao segura? qual pode ser a vulnerabildade? 
     function donation(uint128 projectId, uint128 stepId, bool payment) external availableToPay(projectId) payable { // false - paga o projeto inteiro; true - paga uma etapa
         if (payment){
@@ -116,4 +123,5 @@ contract Impacto {
         (bool sent,) = _to.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
     }
+    
 }
