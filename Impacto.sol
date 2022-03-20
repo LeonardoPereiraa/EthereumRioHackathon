@@ -82,13 +82,34 @@ contract Impacto {
 
     //metodos get, cancel?, eventos
 
-    function getProjects(uint128 projectId) public view returns (Projeto memory){
-        Projeto memory meuProjeto = projetos[projectId];
-        return meuProjeto;
+    function getProjects(uint128 projectId) public view returns 
+    ( 
+        bool concluded,
+        string memory projectName ,
+        address  ongAddress,
+        uint128 quantEtapas,
+        uint256 totalCost,
+        address donor 
+    ){        
+        concluded =projetos[projectId].concluded; 
+        projectName=projetos[projectId].projectName;
+        ongAddress =projetos[projectId].ongAddress;
+        quantEtapas =projetos[projectId].quantEtapas;
+        totalCost = projetos[projectId].totalCost;
+        donor = projetos[projectId].donor;
+         // é diferente de address(0) se alguém doar para o projeto todo 
     }
-    function getEtapa(uint128 projectId, uint128 etapaNumber ) public view returns (Etapa memory){
-        Etapa memory listaEtapa = etapas[projectId][etapaNumber];
-        return listaEtapa;
+    function getEtapa(uint128 projectId, uint128 etapaNumber ) public view returns 
+    (
+        uint128 stepId,
+        string memory text,
+        uint256 cost,
+        address donor
+    ){
+        stepId = etapas[projectId][etapaNumber].stepId;
+        text = etapas[projectId][etapaNumber].text;
+        cost = etapas[projectId][etapaNumber].cost;
+        donor = etapas[projectId][etapaNumber].donor;
     }
     function getNumberOfEtapas(uint128 projectId) public view returns (uint256){
         return etapas[projectId].length;
