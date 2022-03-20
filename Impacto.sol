@@ -19,6 +19,7 @@ contract Impacto {
         address donor; // é diferente de address(0) se alguém doar para o projeto todo
     }
 
+    event eventCreateProject(  address ongAddress ,uint128 quantEtapas , uint128 quantEtapasConcluidas);
     mapping(uint128 => Projeto) private projetos;
     mapping(uint128 => Etapa[]) private etapas;
     mapping(uint128 => uint128) quantEtapasConcluidas; // armazena a quantidade de etapas concluídas de cada projeto
@@ -26,7 +27,7 @@ contract Impacto {
 
     address[] private doadores; // lista de doadores
     mapping (address => mapping (uint128 => uint256)) valorDoado; // quanto um doador x doou para um projeto y
-
+    
     constructor() payable {}
 
     receive() external payable {}
@@ -56,7 +57,7 @@ contract Impacto {
         createSteps(id, _quantTotalEtapas, _text, _cost);
         quantEtapasConcluidas[id] = 0;
         indexOf.push(id);
-        //emit eventCreateProject(  projetos[id].ongAddress,projetos[id].quantEtapas,quantEtapasConcluidas[id]);
+        emit eventCreateProject(  projetos[id].ongAddress,projetos[id].quantEtapas,quantEtapasConcluidas[id]);
     }
 
     function createSteps(uint128 id, uint128 _quantTotalEtapas, string[] calldata _text, uint256[] calldata _cost) private {
