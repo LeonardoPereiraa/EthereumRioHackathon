@@ -24,8 +24,8 @@ contract Impacto {
     mapping(uint128 => uint128) quantEtapasConcluidas; // armazena a quantidade de etapas concluídas de cada projeto
     uint128[] private indexOf; // guarda os identificadores dos projetos
 
-    address[] private doadores;
-    mapping (address => mapping (uint128 => uint128)) valorDoado; // quanto um doador x doou para um projecto y
+    address[] private doadores; // lista de doadores
+    mapping (address => mapping (uint128 => uint256)) valorDoado; // quanto um doador x doou para um projeto y
 
     constructor() payable {}
 
@@ -101,6 +101,9 @@ contract Impacto {
             projetos[projectId].donor = msg.sender;
             quantEtapasConcluidas[projectId] = projetos[projectId].quantEtapas;
         }
+
+        doadores.push(msg.sender);
+        valorDoado[msg.sender][projectId] += msg.value;
         
         if(projetos[projectId].quantEtapas == quantEtapasConcluidas[projectId]){
             projetos[projectId].concluded = true;
