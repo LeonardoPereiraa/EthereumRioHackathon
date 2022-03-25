@@ -9,7 +9,6 @@ contract ImpactoV6 is ERC721Enumerable, Ownable {
 
     string RevealeadURI = "ipfs://QmQYKXSUXvv1jGUGyuzJhsSFRageA7Brj7eUJxCkhpVJm6/metadata.json"; 
     string public baseExtension = ".json";
-    //uint256 public cost = 0.0001 ether; // por enquanto
     uint256 public maxSupply = 10; //3000
     uint256 public maxMintAmount = 2; //1
     bool public paused = false;
@@ -37,7 +36,6 @@ contract ImpactoV6 is ERC721Enumerable, Ownable {
         require( tx.origin == msg.sender, "CANNOT MINT THROUGH A CUSTOM CONTRACT");
 
         if(msg.sender != owner()) {
-            //require(msg.value >= cost * _mintAmount);
             require(addressMintedBalance[msg.sender] + _mintAmount <= maxMintAmount, "max NFT per address exceeded");
         }
         _safeMint(msg.sender, supply + 1);
@@ -74,13 +72,9 @@ contract ImpactoV6 is ERC721Enumerable, Ownable {
 
     //only owner
     
-/*     function setCost(uint256 _newCost) public onlyOwner {
-        cost = _newCost;
-    } */
-
-    function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
-        maxMintAmount = _newmaxMintAmount;
-    }  
+    function setmaxSupply(uint256 _newmaxSupply) public onlyOwner {
+        maxSupply = _newmaxSupply;
+    }
 
 
     function setBaseExtension(string memory _newBaseExtension) public onlyOwner {
