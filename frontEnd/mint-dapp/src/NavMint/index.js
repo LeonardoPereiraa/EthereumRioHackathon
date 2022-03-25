@@ -113,9 +113,9 @@ const NavMint = () => {
             setClaimingNft(true);
             console.log("minting...");
     
-            let valueTransaction = CONFIG.DISPLAY_COST * mintAmount;
+            //let valueTransaction = CONFIG.DISPLAY_COST * mintAmount;
     
-            let mintTransaction = await impacto.mint(BigNumber.from(mintAmount), {value: ethers.utils.parseEther(valueTransaction.toString())});
+            let mintTransaction = await impacto.mint(1/* BigNumber.from(mintAmount), {value: ethers.utils.parseEther(valueTransaction.toString())} */);
             await mintTransaction.wait();
             setFeedback(`wow! the ${CONFIG.NFT_NAME} is minted! go visit Collection on Opensea.io to view it`);
             setMintado(true);
@@ -162,7 +162,7 @@ const NavMint = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const impacto = new ethers.Contract(CONFIG.CONTRACT_ADDRESS, abi.abi, provider);
         console.log("ohhhhh2")
-        let mintedNFT = await impacto.currentSupply();
+        let mintedNFT = await impacto.totalSupply();
         console.log("ohhhhh3")
         console.log(await mintedNFT.wait);
         let totalMinted = BigNumber.from(mintedNFT._hex).toString();

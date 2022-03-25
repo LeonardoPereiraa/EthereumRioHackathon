@@ -1,6 +1,6 @@
 export const CONFIG = {
-    CONTRACT_ADDRESS: "0xBf2396EC453Ef05FaB69f3AA938581A1bBdb94f8",
-    SCAN_LINK: "https://rinkeby.etherscan.io/address/0xBf2396EC453Ef05FaB69f3AA938581A1bBdb94f8",
+    CONTRACT_ADDRESS: "0xFd486BAeEf41512011fAAc65e4eaCFe8CDc2dbB5",
+    SCAN_LINK: "https://rinkeby.etherscan.io/address/0xFd486BAeEf41512011fAAc65e4eaCFe8CDc2dbB5",
     NETWORK: {
       NAME: "Rinkeby Testnet",
       SYMBOL: "ETH",
@@ -13,8 +13,8 @@ export const CONFIG = {
     DISPLAY_COST: 0.0001,
     GAS_LIMIT: 285000,
     MARKETPLACE: "Opensea",
-    MARKETPLACE_LINK: "https://testnets.opensea.io/assets/0xBf2396EC453Ef05FaB69f3AA938581A1bBdb94f8/",
-    COLLECTION_LINK: "https://testnets.opensea.io/collection/impactoairdrop-evlv2zmk2z",
+    MARKETPLACE_LINK: "https://testnets.opensea.io/assets/0xFd486BAeEf41512011fAAc65e4eaCFe8CDc2dbB5/",
+    COLLECTION_LINK: "https://testnets.opensea.io/collection/teste-conexao-impacto-v4",
     SHOW_BACKGROUND: false,
   };
   
