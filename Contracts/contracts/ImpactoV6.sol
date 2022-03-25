@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ImpactoV6 is ERC721Enumerable, Ownable {
+contract ImpactoV7 is ERC721Enumerable, Ownable {
     using Strings for uint256;
 
     string RevealeadURI = "ipfs://QmQYKXSUXvv1jGUGyuzJhsSFRageA7Brj7eUJxCkhpVJm6/metadata.json"; 

@@ -2,12 +2,12 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const ImpactoV6 = await hre.ethers.getContractFactory("ImpactoV6");
-  const impactoV6 = await ImpactoV6.deploy();
+  const ImpactoV7 = await hre.ethers.getContractFactory("ImpactoV7");
+  const impactoV7 = await ImpactoV7.deploy();
 
-  await impactoV6.deployed();
+  await impactoV7.deployed();
 
-  console.log("Impacto deployed to:", impactoV6.address);
+  console.log("Impacto deployed to:", impactoV7.address);
 
   
   /* let mint = await impactoV6.mint(1);
